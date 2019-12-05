@@ -28,6 +28,28 @@ app.get("/api/users", (req, res) => {
     });
 });
 
+// Get user by id
+
+app.get("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+  user
+    .findById(id)
+    .then(userId => {
+      if (!userId) {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      } else {
+        return res.status(200).send(userId);
+      }
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ errorMessage: "The user information could not be retrieved" });
+    });
+});
+
 // POST NEW USER
 
 app.post("/api/users", (req, res) => {
