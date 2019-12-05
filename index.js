@@ -91,7 +91,7 @@ app.delete("/api/users/:id", (req, res) => {
     .remove(id)
     .then(userId => {
       if (userId) {
-        res.status(200).json("User removed");
+        res.status(200).send(`${userId}, records deleted`);
       }
     })
     .catch(error => {
