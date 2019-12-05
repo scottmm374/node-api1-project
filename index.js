@@ -2,7 +2,7 @@
 
 const express = require("express");
 
-const db = require("./data/db.js");
+const user = require("./data/db.js");
 
 const port = 5000;
 const host = "127.0.0.1";
@@ -16,7 +16,8 @@ app.get("/", (req, res) => {
 // get all users
 
 app.get("/api/users", (req, res) => {
-  db.find()
+  user
+    .find()
     .then(user => {
       res.status(200).json(user);
     })
@@ -39,25 +40,29 @@ app.post("/api/users", (req, res) => {
     bio: req.body.bio
   };
 
-  db.insert(newUser);
+  user.insert(newUser);
   res.status(201).json("New user Created");
 });
 
 // delete user
 
-app.delete("api/users/:id", (req, res) => {
-  const user = req.params.id;
-  db.remove()
-    .then(user => {
-      if (!user) {
+app.delete("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+  user
+    .findById(id)
+    .then(userId => {
+      if (userId) {
         res
           .status(404)
           .json({ message: "The user with the specified ID does not exist." });
       } else {
-        res.status(200).json("User Deleted");
+        user.remove(id).then(user => {
+          res.status(200).json("User removed");
+        });
       }
     })
-    .catch(err => {
+
+    .catch(error => {
       res.status(500).json({ errorMessage: "The user could not be removed" });
     });
 });
