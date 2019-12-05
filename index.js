@@ -58,15 +58,17 @@ app.post("/api/users", (req, res) => {
     bio: req.body.bio
   };
 
+  if (!req.body.name || !req.body.bio) {
+    return res
+      .status(400)
+      .json({ errorMessage: "Please provide name and bio for the user." });
+  }
+
   user
     .insert(newUser)
     .then(user => {
-      if (!req.body.name || !req.body.bio) {
-        return res
-          .status(400)
-          .json({ errorMessage: "Please provide name and bio for the user." });
-      } else {
-        res.status(201).json("New user Created");
+      if (req.body.name && req.body.bio) {
+        return res.status(201).json("New user Created");
       }
     })
     .catch(error => {
@@ -75,6 +77,57 @@ app.post("/api/users", (req, res) => {
       });
     });
 });
+
+// app.post("/api/users", (req, res) => {
+//   const newUser = {
+//     name: req.body.name,
+//     bio: req.body.bio
+//   };
+
+//   user
+//     .insert(newUser)
+//     .then(user => {
+//       if (req.body.name && req.body.bio) {
+//         return res.status(201).json("New user Created");
+//       }
+//     })
+//     .then(user => {
+//       if (!req.body.name || !req.body.bio) {
+//         return res
+//           .status(400)
+//           .json({ errorMessage: "Please provide name and bio for the user." });
+//       }
+//     })
+
+//     .catch(error => {
+//       res.status(500).json({
+//         errorMessage: "There was an error while saving the user to the database"
+//       });
+//     });
+// });
+// app.post("/api/users", (req, res) => {
+//   const newUser = {
+//     name: req.body.name,
+//     bio: req.body.bio
+//   };
+
+//   user
+//     .insert(newUser)
+//     .then(user => {
+//       if (!req.body.name || !req.body.bio) {
+//         return res
+//           .status(400)
+//           .json({ errorMessage: "Please provide name and bio for the user." });
+//       } else {
+//         res.status(201).json("New user Created");
+//       }
+//     })
+//     .catch(error => {
+//       res.status(500).json({
+//         errorMessage: "There was an error while saving the user to the database"
+//       });
+//     });
+// });
 
 // DELETE USER
 
