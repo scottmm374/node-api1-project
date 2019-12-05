@@ -46,22 +46,40 @@ app.post("/api/users", (req, res) => {
 
 // delete user
 
+// app.delete("/api/users/:id", (req, res) => {
+//   const id = req.params.id;
+//   if (id) {
+//     user
+//       .remove(id)
+//       .then(user => {
+//         res.status(200).json("User removed");
+//       })
+//       .catch(error => {
+//         res.status(500).json({ errorMessage: "The user could not be removed" });
+//       });
+//   } else {
+//     res
+//       .status(404)
+//       .json({ message: "The user with the specified ID does not exist." });
+//   }
+// });
+
 app.delete("/api/users/:id", (req, res) => {
   const id = req.params.id;
+  user.findById(id).then(userId => {
+    if (!userId) {
+      res
+        .status(404)
+        .json({ message: "The user with the specified ID does not exist." });
+    }
+  });
   user
-    .findById(id)
+    .remove(id)
     .then(userId => {
       if (userId) {
-        res
-          .status(404)
-          .json({ message: "The user with the specified ID does not exist." });
-      } else {
-        user.remove(id).then(user => {
-          res.status(200).json("User removed");
-        });
+        res.status(200).json("User removed");
       }
     })
-
     .catch(error => {
       res.status(500).json({ errorMessage: "The user could not be removed" });
     });
