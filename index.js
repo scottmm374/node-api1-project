@@ -106,40 +106,7 @@ app.delete("/api/users/:id", (req, res) => {
 
 // Update Put user
 
-// * First try, Almost works but still updates info even if a field is missing.
-// app.put("/api/users/:id", (req, res) => {
-//   const updateUser = {
-//     name: req.body.name,
-//     bio: req.body.bio
-//   };
-//   const id = req.params.id;
-//   user.findById(id).then(userId => {
-//     // console.log(userId);
-//     if (!userId || !req.body.name || !req.body.bio) {
-//       res
-//         .status(404)
-//         .json({
-//           message:
-//             "The User Id does not exist, Or Name and or Bio have not been provided."
-//         });
-//     }
-//   });
-
-//   user
-//     .update(id, updateUser)
-//     .then(user => {
-//       if (req.body.name && req.body.bio) {
-//         return res.status(200).send(`${user} has been updated.`);
-//       }
-//     })
-//     .catch(error => {
-//       res.status(500).json({
-//         errorMessage: "The user information could not be modified"
-//       });
-//     });
-// });
-
-// * Another attempt, Also works, but updates even if field is missing lol.
+//  Update Put user
 
 app.put("/api/users/:id", (req, res) => {
   const updateUser = {
@@ -150,25 +117,26 @@ app.put("/api/users/:id", (req, res) => {
 
   user.findById(id).then(user => {
     if (!user) {
-      res.status(404).json({ message: "User id not found" });
+      return res.status(404).json({ message: "User id not found" });
     }
 
     if (!req.body.name || !req.body.bio) {
-      res.status(404).json({
+      return res.status(400).json({
         message: "Please provide name and bio for the user."
       });
     }
-  });
-  user
-    .update(id, updateUser)
-    .then(user => {
-      res.status(200).send(`${user} has been updated.`);
-    })
-    .catch(error => {
-      res.status(500).json({
-        errorMessage: "The user information could not be modified"
+
+    user
+      .update(id, updateUser)
+      .then(user => {
+        res.status(200).send(`${user} has been updated.`);
+      })
+      .catch(error => {
+        res.status(500).json({
+          errorMessage: "The user information could not be modified"
+        });
       });
-    });
+  });
 });
 
 app.listen(port, host, () => {
