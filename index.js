@@ -35,6 +35,7 @@ app.get("/api/users/:id", (req, res) => {
   user
     .findById(id)
     .then(userId => {
+      console.log("userId", userId);
       if (!userId) {
         res
           .status(404)
@@ -115,8 +116,8 @@ app.put("/api/users/:id", (req, res) => {
   };
   const id = req.params.id;
 
-  user.findById(id).then(user => {
-    if (!user) {
+  user.findById(id).then(data => {
+    if (!data) {
       return res.status(404).json({ message: "User id not found" });
     }
 
@@ -126,10 +127,11 @@ app.put("/api/users/:id", (req, res) => {
       });
     }
 
+    console.log("updateUser", user.update);
     user
       .update(id, updateUser)
-      .then(user => {
-        res.status(200).send(`${user} has been updated.`);
+      .then(data => {
+        res.status(200).send(`${data} has been updated.`);
       })
       .catch(error => {
         res.status(500).json({
